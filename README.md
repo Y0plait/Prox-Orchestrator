@@ -3,8 +3,6 @@
 
 Automate Proxmox installation across multiple nodes using answer files, webhooks, and Ansible.
 
----
-
 ## 📁 Project Structure
 
 ```
@@ -31,11 +29,9 @@ prox_orchestrator/
 └── README.md                      # This file
 ```
 
----
-
 ## 🔄 How It Works
 
-1. A PXE-booted Proxmox ISO fetches an `answer.toml` from a webhook endpoint (e.g. `/answer/`).
+1. A custom Proxmox ISO fetches an `answer.toml` from a web endpoint (e.g. `/answer/`).
 2. The orchestrator generates a machine-specific `answer.toml` using:
    - UUID
    - Requester IP
@@ -43,51 +39,18 @@ prox_orchestrator/
 3. When Proxmox completes installation, it POSTs to `/webhook/` with system info.
 4. The orchestrator logs the info and triggers an Ansible playbook if all nodes are ready.
 
----
-
 ## 🔧 Preparing the ISO for Auto-Install
 
-### 📦 Install the tool
+### 📦 Install the tool ([official doc](https://pve.proxmox.com/wiki/Automated_Installation#Assistant_Tool))
 
 ```bash
 apt update
 apt install proxmox-auto-install-assistant xorriso
 ```
 
-### 📁 Modes for Including `answer.toml`
+### 📁 Customizing the ISO
 
-#### 📀 1. Include answer file inside the ISO
-
-```bash
-proxmox-auto-install-assistant prepare-iso /path/to/proxmox.iso \
-  --fetch-from iso \
-  --answer-file /path/to/answer.toml
-```
-
-#### 💽 2. Provide answer on a separate partition (e.g., USB)
-
-```bash
-proxmox-auto-install-assistant prepare-iso /path/to/proxmox.iso \
-  --fetch-from partition \
-  --partition-label "PROXMOX-AIS"
-```
-
-Then prepare the USB drive:
-
-```bash
-# WARNING: destructive formatting
-mkfs.vfat /dev/sdX1
-fatlabel /dev/sdX1 "PROXMOX-AIS"
-
-mkdir /mnt/usb
-mount /dev/sdX1 /mnt/usb
-
-cp /path/to/answer.toml /mnt/usb/answer.toml
-
-sync && umount /mnt/usb
-```
-
-#### 🌐 3. Fetch answer file via HTTP(S)
+#### 🌐 Fetch answer file via HTTP(S)
 
 ```bash
 proxmox-auto-install-assistant prepare-iso /path/to/proxmox.iso \
@@ -96,9 +59,7 @@ proxmox-auto-install-assistant prepare-iso /path/to/proxmox.iso \
   --cert-fingerprint "XX:YY:ZZ:..."
 ```
 
-> **Note**: You can optionally provide the fingerprint via DHCP or DNS TXT record.
-
----
+> **Note**: You can optionally provide the fingerprint via DHCP or DNS TXT record (see [here](https://pve.proxmox.com/wiki/Automated_Installation#Answer_Fetched_via_HTTP)).
 
 ## 📬 HTTP Integration
 
@@ -135,8 +96,6 @@ Sent automatically after Proxmox completes setup:
 }
 ```
 
----
-
 ## 🚀 Automatic Ansible Playbook Execution
 
 When all nodes are marked `"installed"` in `dynamic-inventory.json`, the orchestrator triggers:
@@ -145,9 +104,9 @@ When all nodes are marked `"installed"` in `dynamic-inventory.json`, the orchest
 ansible-playbook -i nodes/dynamic-inventory.json setup-cluster.yml
 ```
 
----
-
 ## 📋 Configuration
+
+Here you can configure the main settings, that will be shared accross all the deployments. As of now, the IP address is set statically based on the first received IP address from the DHCP server upon boot. This behavior can be modified to use a dynamic ip address (see [here](https://pve.proxmox.com/wiki/Automated_Installation#Network_Section)).
 
 ### 🧩 `config.toml`
 
@@ -162,17 +121,13 @@ machine_net_int = "Intel Corporation 82574L"
 
 ### 📁 `default.toml`
 
-Used as a base for generating each node’s `answer.toml`. Must conform to [Proxmox answer file spec](https://pve.proxmox.com/wiki/Automated_Installations).
-
----
+Used as a base for generating each node’s `answer.toml`. Must conform to [Proxmox answer file spec](https://pve.proxmox.com/wiki/Automated_Installation#Answer_File_Format_2).
 
 ## 🛡️ Security Tips
 
 - Use HTTPS for answer file delivery (`/answer/`)
 - Pin TLS certificate with `--cert-fingerprint`
 - Use IP whitelisting or auth for sensitive endpoints
-
----
 
 ## 📦 Requirements
 
@@ -187,15 +142,11 @@ pip install aiohttp tomlkit
 apt install proxmox-auto-install-assistant xorriso
 ```
 
----
-
 ## 🤝 Contributing
 
 - Fork & PR welcome!
 - Add support for parallel Ansible tasks or dashboard? Let's talk.
 
----
-
 ## 📜 License
 
-MIT
+[MIT](./LICENSE)
