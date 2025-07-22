@@ -1,0 +1,9 @@
+# Customisable settings
+
+machine_template_name = "pve-"              # The base for naming the servers
+
+machine_net_dn = ".autoinstall"             # The domain name of the server
+machine_net_dns = "192.168.10.2"            # Network's DNS IP
+machine_net_mask = "/24"                    # Network's mask
+machine_net_gateway = "192.168.10.254"      # Network gateway
+machine_net_int = "*Red Hat*"                 # Filter to match to choose the configured network card

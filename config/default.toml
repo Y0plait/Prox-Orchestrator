@@ -1,0 +1,19 @@
+[global]
+keyboard = "fr"
+country = "fr"
+fqdn = "pveauto.testinstall"
+mailto = "mail@no.invalid"
+timezone = "Europe/Paris"
+root-password-hashed = "$y$j9T$KQobsgRrujEd7C20tJRsF.$xdAKWIAg/0o8CbVTXlaDf7GqLjIkuglQ1OKFW1QtOpC"
+
+[network]
+source = "from-answer"
+
+[disk-setup]
+filesystem = "btrfs"
+btrfs.raid = "raid0"
+disk-list = ["sda"]
+
+
+[post-installation-webhook]
+url = "http://192.168.10.222:8000/webhook/"
