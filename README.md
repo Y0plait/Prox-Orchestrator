@@ -142,6 +142,9 @@ pip install aiohttp tomlkit
 apt install proxmox-auto-install-assistant xorriso
 ```
 
+## Action flow
+![ActionFlow](./doc/ProcessInstallation.png)
+
 ## 🤝 Contributing
 
 - Fork & PR welcome!
