@@ -1,3 +1,4 @@
 **/venv/** 
 **/.old/**
 nodes/*.autoinstall/
+**/__pycache__/**
