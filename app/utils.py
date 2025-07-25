@@ -14,7 +14,7 @@ def assert_default_answer_file_exists():
 def assert_default_answer_file_parseable():
     with open(DEFAULT_ANSWER_FILE_PATH) as f:
         try:
-            tomlkit.parse(f.read())
+            tomlkit.parse(f.read()) 
         except Exception as e:
             raise RuntimeError(f"Error parsing default answer file: {e}")
 
